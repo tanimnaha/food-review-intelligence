@@ -1174,17 +1174,17 @@ elif "Studio" in st.session_state.current_page or "Playground" in st.session_sta
         "Decent rolls for a quick bite after college. Inexpensive and hygienic enough for street food."
     ]
     
-    quick_pick = st.selectbox("Or choose a sample review:", options=["Custom text..."] + sample_reviews)
-    default_val = "" if quick_pick == "Custom text..." else quick_pick
+    quick_pick = st.selectbox("Or choose a sample review:", options=sample_reviews, index=0)
     
     test_text = st.text_area(
         "Enter Review Text:",
-        value=default_val,
+        value=quick_pick,
         placeholder="Type or paste any customer review here...",
-        height=130
+        height=100
     )
     
-    if st.button("Run AI Model Inference", type="primary"):
+    run_btn = st.button("Run AI Model Inference", type="primary")
+    if run_btn or test_text.strip():
         if not test_text.strip():
             st.error("Please enter review text to analyze.")
         else:
