@@ -1140,7 +1140,7 @@ elif "Surveillance" in st.session_state.current_page:
                 st.markdown("##### ⚠️ Detected Health & Safety Code Indicators")
                 for cat, terms in audit_res["violations"].items():
                     terms_pills = " ".join([f'<span class="badge badge-rose">{t}</span>' for t in terms])
-                    st.markdown(f"- **{cat}:** {terms_pills}", unsafe_allow_html=True)
+                    render_html(f"<div style='margin-bottom:6px; font-size:0.9rem;'>• <strong>{cat}:</strong> {terms_pills}</div>")
             else:
                 st.success("✅ No critical biological illness, pest infestation, or sanitation triggers detected in this review.")
                 
