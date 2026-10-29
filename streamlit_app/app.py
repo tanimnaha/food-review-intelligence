@@ -8,6 +8,7 @@ and aspect-based sentiment analysis, food safety audit tracking, and contextual 
 from __future__ import annotations
 import io
 import sys
+import textwrap
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -38,8 +39,12 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+def render_html(html_str: str) -> None:
+    """Render raw HTML safely using st.html and textwrap.dedent without markdown code block interference."""
+    st.html(textwrap.dedent(html_str).strip())
+
 # Custom Styling
-st.markdown("""
+render_html("""
 <style>
     :root {
         --primary: #0F766E;
@@ -119,41 +124,31 @@ st.markdown("""
     }
 
     /* Restaurant Card */
-    .resto-card {
-        background: white;
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 1.4rem;
-        margin-bottom: 1.2rem;
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-    }
-    .resto-card:hover {
-        border-color: #0D9488;
-        box-shadow: 0 8px 20px -4px rgba(13, 148, 136, 0.15);
+    .resto-card-inner {
+        padding: 0.25rem 0.1rem;
     }
     .resto-name {
-        font-size: 1.35rem;
-        font-weight: 750;
+        font-size: 1.4rem;
+        font-weight: 800;
         color: #0F172A;
-        margin-bottom: 0.15rem;
+        margin-bottom: 0.2rem;
     }
     .resto-sub {
-        font-size: 0.85rem;
+        font-size: 0.88rem;
         color: #64748B;
-        margin-bottom: 0.85rem;
+        margin-bottom: 0.65rem;
     }
 
     /* Pills & Badges */
     .badge {
         display: inline-block;
-        padding: 0.22rem 0.65rem;
+        padding: 0.24rem 0.68rem;
         border-radius: 9999px;
-        font-size: 0.74rem;
+        font-size: 0.75rem;
         font-weight: 650;
         letter-spacing: 0.02em;
-        margin-right: 0.35rem;
-        margin-bottom: 0.35rem;
+        margin-right: 0.4rem;
+        margin-bottom: 0.4rem;
     }
     .badge-teal { background: #CCFBF1; color: #0F766E; }
     .badge-amber { background: #FEF3C7; color: #B45309; }
@@ -165,10 +160,10 @@ st.markdown("""
     .score-triad {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 0.75rem;
+        gap: 0.85rem;
         background: #F8FAFC;
         border-radius: 10px;
-        padding: 0.85rem;
+        padding: 0.95rem;
         margin-top: 0.85rem;
         margin-bottom: 0.85rem;
         border: 1px solid #EEF2F6;
@@ -177,31 +172,31 @@ st.markdown("""
         text-align: center;
     }
     .score-label {
-        font-size: 0.7rem;
+        font-size: 0.72rem;
         color: #64748B;
         text-transform: uppercase;
-        font-weight: 600;
+        font-weight: 700;
         letter-spacing: 0.04em;
     }
     .score-num {
-        font-size: 1.25rem;
+        font-size: 1.3rem;
         font-weight: 800;
         margin-top: 0.15rem;
     }
 
     /* Section Header */
     .section-head {
-        font-size: 1.35rem;
-        font-weight: 750;
+        font-size: 1.45rem;
+        font-weight: 800;
         color: #0F172A;
         margin-top: 0.5rem;
-        margin-bottom: 0.8rem;
+        margin-bottom: 0.85rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
     }
 </style>
-""", unsafe_allow_html=True)
+""")
 
 # Data Loading with Caching
 @st.cache_data(show_spinner=False)
@@ -301,7 +296,7 @@ if "selected_restaurant_id" not in st.session_state:
 
 # Sidebar Navigation
 with st.sidebar:
-    st.markdown("""
+    render_html("""
     <div style="display:flex; align-items:center; gap:0.65rem; margin-bottom:1.2rem;">
         <div style="background:#0F766E; color:white; width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.35rem; font-weight:800;">FL</div>
         <div>
@@ -309,7 +304,7 @@ with st.sidebar:
             <div style="font-size:0.75rem; color:#64748B;">Restaurant Intelligence App</div>
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """)
     
     nav_options = [
         "🔍 Explore & Directory",
@@ -348,15 +343,15 @@ with st.sidebar:
     st.markdown(f"- **Live User Reviews**: `{len(user_revs_all)}` in SQLite")
     
     st.markdown("---")
-    st.markdown("""
+    render_html("""
     <div style="background:#F1F5F9; border-radius:8px; padding:0.75rem; font-size:0.74rem; color:#475569;">
         <strong>Prototype Disclaimer:</strong><br>
         Customer reviews and FSSAI inspection audits include prototype synthetic data for research & portfolio benchmarking.
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
 # Main Banner
-st.markdown("""
+render_html("""
 <div class="hero-banner">
     <div class="hero-title">Kolkata FoodLens 🍲</div>
     <div class="hero-subtitle">
@@ -364,11 +359,11 @@ st.markdown("""
         Aspect-Based Sentiment Analysis (ABSA) with objective FSSAI compliance auditing.
     </div>
 </div>
-""", unsafe_allow_html=True)
+""")
 
 # PAGE 1: EXPLORE & DIRECTORY
 if "Explore" in st.session_state.current_page:
-    st.markdown('<div class="section-head">🔍 Explore Kolkata Restaurants</div>', unsafe_allow_html=True)
+    render_html('<div class="section-head">🔍 Explore Kolkata Restaurants</div>')
     
     # Filter Controls
     c1, c2, c3, c4 = st.columns([1.5, 1.2, 1.2, 1.1])
@@ -412,40 +407,40 @@ if "Explore" in st.session_state.current_page:
     # KPI row
     kpi1, kpi2, kpi3, kpi4 = st.columns(4)
     with kpi1:
-        st.markdown(f"""
+        render_html(f"""
         <div class="metric-card">
             <div class="metric-title">Matched Restaurants</div>
             <div class="metric-value">{len(filtered)}</div>
             <div class="metric-subtitle">Out of 100 indexed</div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
     with kpi2:
         avg_rating = filtered["zomato_rating"].mean() if not filtered.empty else 0
-        st.markdown(f"""
+        render_html(f"""
         <div class="metric-card">
             <div class="metric-title">Avg Community Rating</div>
             <div class="metric-value">★ {avg_rating:.2f}</div>
             <div class="metric-subtitle">From Zomato Kolkata records</div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
     with kpi3:
         avg_cost = filtered["cost_for_two_inr"].mean() if not filtered.empty else 0
-        st.markdown(f"""
+        render_html(f"""
         <div class="metric-card">
             <div class="metric-title">Avg Cost for Two</div>
             <div class="metric-value">₹{int(avg_cost)}</div>
             <div class="metric-subtitle">Dining cost estimate</div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
     with kpi4:
-        safety_verified_count = (filtered["safety_data_confidence"] != "safety_data_unavailable").sum()
-        st.markdown(f"""
+        safety_verified_count = int((filtered["safety_data_confidence"] != "safety_data_unavailable").sum())
+        render_html(f"""
         <div class="metric-card">
             <div class="metric-title">Food Safety Audits</div>
             <div class="metric-value">{safety_verified_count} / {len(filtered)}</div>
             <div class="metric-subtitle">Verified FSSAI records</div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
         
     st.write("")
     
@@ -481,50 +476,43 @@ if "Explore" in st.session_state.current_page:
             cust_color = "#0F766E" if cust_score >= 70 else ("#D97706" if cust_score >= 50 else "#DC2626")
             veg_badge = '<span class="badge badge-teal">🌱 Veg Focused</span>' if row["veg_focused"] else ''
             
-            st.markdown(f"""
-            <div class="resto-card">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                    <div>
-                        <div class="resto-name">{name} <span style="font-size:0.85rem; font-weight:normal; color:#64748B;">({nb})</span></div>
-                        <div class="resto-sub">🍽️ {cuis} &bull; ₹{cost} for two &bull; {ptier}</div>
-                        <div>
-                            {conf_badge}
-                            {veg_badge}
-                            <span class="badge badge-indigo">★ {z_rat:.1f} ({z_votes:,} votes)</span>
+            # Combine badges on a clean single line
+            badges_html = f'{conf_badge} {veg_badge} <span class="badge badge-indigo">★ {z_rat:.1f} ({z_votes:,} votes)</span>'
+            
+            with st.container(border=True):
+                render_html(f"""
+                <div class="resto-card-inner">
+                    <div class="resto-name">{name} <span style="font-size:0.9rem; font-weight:normal; color:#64748B;">({nb})</span></div>
+                    <div class="resto-sub">🍽️ {cuis} &bull; ₹{cost} for two &bull; {ptier}</div>
+                    <div style="margin-bottom:0.75rem;">{badges_html}</div>
+                    <div class="score-triad">
+                        <div class="score-item">
+                            <div class="score-label">1. Customer Experience</div>
+                            <div class="score-num" style="color:{cust_color};">{cust_score} <span style="font-size:0.75rem; color:#64748B;">/ 100</span></div>
+                            <div style="font-size:0.68rem; color:#64748B;">From {analytics['total_reviews']} reviews</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-label">2. Verified Safety</div>
+                            <div class="score-num" style="color:{safety_color};">{safety_val_str}</div>
+                            <div style="font-size:0.68rem; color:#64748B;">Outcome: {safety_info['outcome'] or 'No data'}</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-label">3. Confidence Level</div>
+                            <div class="score-num" style="font-size:0.95rem; margin-top:0.35rem; color:#1E293B;">{safety_info['confidence_label']}</div>
+                            <div style="font-size:0.68rem; color:#64748B;">Inspection Evidence</div>
                         </div>
                     </div>
                 </div>
+                """)
                 
-                <div class="score-triad">
-                    <div class="score-item">
-                        <div class="score-label">1. Customer Experience</div>
-                        <div class="score-num" style="color:{cust_color};">{cust_score} <span style="font-size:0.75rem; color:#64748B;">/ 100</span></div>
-                        <div style="font-size:0.68rem; color:#64748B;">From {analytics['total_reviews']} reviews</div>
-                    </div>
-                    <div class="score-item">
-                        <div class="score-label">2. Verified Safety</div>
-                        <div class="score-num" style="color:{safety_color};">{safety_val_str}</div>
-                        <div style="font-size:0.68rem; color:#64748B;">Outcome: {safety_info['outcome'] or 'No data'}</div>
-                    </div>
-                    <div class="score-item">
-                        <div class="score-label">3. Confidence Level</div>
-                        <div class="score-num" style="font-size:0.95rem; margin-top:0.35rem; color:#1E293B;">{safety_info['confidence_label']}</div>
-                        <div style="font-size:0.68rem; color:#64748B;">Inspection Evidence</div>
-                    </div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            c_btn1, c_btn2 = st.columns([1, 4])
-            with c_btn1:
-                if st.button("Inspect Details ➔", key=f"btn_inspect_{rid}"):
+                if st.button("Inspect Details & Submit Review ➔", key=f"btn_inspect_{rid}", use_container_width=True):
                     st.session_state.selected_restaurant_id = rid
                     st.session_state.current_page = "🏛️ Restaurant Detail & Review"
                     st.rerun()
 
 # PAGE 2: RESTAURANT DETAIL & SUBMIT REVIEW
 elif "Detail" in st.session_state.current_page:
-    st.markdown('<div class="section-head">🏛️ Restaurant Deep Dive & Review Center</div>', unsafe_allow_html=True)
+    render_html('<div class="section-head">🏛️ Restaurant Deep Dive & Review Center</div>')
     
     # Selector
     rest_names = restaurants_df["name"].tolist()
@@ -543,7 +531,7 @@ elif "Detail" in st.session_state.current_page:
     safety_info = safety_engine.calculate_score(rid)
     
     # Detail Header
-    st.markdown(f"""
+    render_html(f"""
     <div style="background:white; border-radius:12px; padding:1.5rem; border:1px solid #E2E8F0; margin-bottom:1.5rem;">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
             <div>
@@ -561,12 +549,12 @@ elif "Detail" in st.session_state.current_page:
             </div>
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """)
     
     # Three distinct score cards as required by prompt
     col_sc1, col_sc2, col_sc3 = st.columns(3)
     with col_sc1:
-        st.markdown(f"""
+        render_html(f"""
         <div class="metric-card" style="border-top: 4px solid #0F766E;">
             <div class="metric-title">1. Customer Experience Score</div>
             <div class="metric-value" style="color:#0F766E;">{analytics['cust_exp_score']} <span style="font-size:0.9rem; color:#64748B;">/ 100</span></div>
@@ -575,7 +563,7 @@ elif "Detail" in st.session_state.current_page:
                 👍 {analytics['pos_count']} Pos &bull; ⚖️ {analytics['neu_count']} Neu &bull; 👎 {analytics['neg_count']} Neg
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
         
     with col_sc2:
         if safety_info["safety_score"] is not None:
@@ -587,17 +575,17 @@ elif "Detail" in st.session_state.current_page:
             s_color = "#64748B"
             s_sub = "Never fabricate scores when records are missing.<br>Status: <strong>No Municipal Audit File</strong>"
             
-        st.markdown(f"""
+        render_html(f"""
         <div class="metric-card" style="border-top: 4px solid #3B82F6;">
             <div class="metric-title">2. Verified Safety Score</div>
             <div class="metric-value" style="color:{s_color};">{s_val}</div>
             <div class="metric-subtitle">{s_sub}</div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
         
     with col_sc3:
         lic_display = str(int(safety_info['fssai_licence_no'])) if safety_info['fssai_licence_no'] is not None and pd.notna(safety_info['fssai_licence_no']) else 'Not registered'
-        st.markdown(f"""
+        render_html(f"""
         <div class="metric-card" style="border-top: 4px solid #8B5CF6;">
             <div class="metric-title">3. Evidence Confidence</div>
             <div class="metric-value" style="font-size:1.35rem; color:#1E293B;">{safety_info['confidence_label']}</div>
@@ -606,7 +594,7 @@ elif "Detail" in st.session_state.current_page:
                 Data Source: West Bengal Municipal Audit Protocol
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
         
     st.write("")
     
@@ -656,12 +644,12 @@ elif "Detail" in st.session_state.current_page:
         for i, asp_item in enumerate(aspect_data):
             with asp_cols[i]:
                 c_score = asp_item["Score"]
-                st.markdown(f"""
+                render_html(f"""
                 <div style="background:white; border:1px solid #E2E8F0; border-radius:8px; padding:0.5rem; text-align:center;">
                     <div style="font-size:0.68rem; color:#64748B; font-weight:700;">{asp_item['Aspect']}</div>
                     <div style="font-size:1.1rem; font-weight:800; color:#0F172A;">{c_score}</div>
                 </div>
-                """, unsafe_allow_html=True)
+                """)
                 
     with col_audit:
         st.markdown("#### 🛡️ Food Safety Audit History")
@@ -680,7 +668,7 @@ elif "Detail" in st.session_state.current_page:
                 else:
                     v_formatted = ", ".join([v.replace("_", " ").title() for v in v_str.split(";")])
                     
-                st.markdown(f"""
+                render_html(f"""
                 <div style="background:white; border-left:4px solid #0F766E; border-radius:8px; padding:0.9rem; margin-bottom:0.75rem; border-top:1px solid #E2E8F0; border-right:1px solid #E2E8F0; border-bottom:1px solid #E2E8F0;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <span class="badge {o_badge}">{r_row['outcome']}</span>
@@ -696,7 +684,7 @@ elif "Detail" in st.session_state.current_page:
                         {re_insp}
                     </div>
                 </div>
-                """, unsafe_allow_html=True)
+                """)
                 
     st.markdown("---")
     
@@ -745,7 +733,7 @@ elif "Detail" in st.session_state.current_page:
             sent_conf = pred_sentiment["confidence"] * 100.0
             badge_color = "#10B981" if sent_label == "POSITIVE" else ("#F59E0B" if sent_label == "NEUTRAL" else "#EF4444")
             
-            st.markdown(f"""
+            render_html(f"""
             <div style="background:#F0FDFA; border:1px solid #99F6E4; border-radius:10px; padding:1.1rem; margin-top:0.75rem; margin-bottom:1rem;">
                 <div style="font-weight:750; font-size:1.05rem; color:#0F766E; margin-bottom:0.5rem;">
                     🤖 Real-Time AI Inference Result:
@@ -762,7 +750,7 @@ elif "Detail" in st.session_state.current_page:
                     <span class="badge {'badge-teal' if pred_aspects['price']=='positive' else ('badge-rose' if pred_aspects['price']=='negative' else 'badge-gray')}">Price: {pred_aspects['price'].upper()}</span>
                 </div>
             </div>
-            """, unsafe_allow_html=True)
+            """)
             
             st.button("🔄 Refresh Analytics with New Review", on_click=lambda: None)
             
@@ -777,7 +765,7 @@ elif "Detail" in st.session_state.current_page:
         else:
             for l_rev in live_revs:
                 s_col = "#10B981" if l_rev['sentiment_label'] == 'positive' else ("#F59E0B" if l_rev['sentiment_label'] == 'neutral' else "#EF4444")
-                st.markdown(f"""
+                render_html(f"""
                 <div style="background:white; border-left:4px solid {s_col}; border-radius:8px; padding:1rem; margin-bottom:0.75rem; border-top:1px solid #E2E8F0; border-right:1px solid #E2E8F0; border-bottom:1px solid #E2E8F0;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <strong>{l_rev['user_name']}</strong>
@@ -792,13 +780,13 @@ elif "Detail" in st.session_state.current_page:
                         <span class="badge badge-gray">Hygiene: {l_rev['sentiment_hygiene']}</span>
                     </div>
                 </div>
-                """, unsafe_allow_html=True)
+                """)
                 
     with tab_hist:
         hist_revs = reviews_df[reviews_df["restaurant_id"] == rid].head(25)
         for _, h_rev in hist_revs.iterrows():
             s_col = "#10B981" if str(h_rev['sentiment_label']).lower() == 'positive' else ("#F59E0B" if str(h_rev['sentiment_label']).lower() == 'neutral' else "#EF4444")
-            st.markdown(f"""
+            render_html(f"""
             <div style="background:white; border-left:4px solid {s_col}; border-radius:8px; padding:0.9rem; margin-bottom:0.65rem; border-top:1px solid #E2E8F0; border-right:1px solid #E2E8F0; border-bottom:1px solid #E2E8F0;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <strong>{h_rev['user_alias']}</strong>
@@ -813,7 +801,7 @@ elif "Detail" in st.session_state.current_page:
                     <span class="badge badge-gray">Hygiene: {h_rev['sentiment_hygiene']}</span>
                 </div>
             </div>
-            """, unsafe_allow_html=True)
+            """)
             
     with tab_all:
         st.write(f"Showing combined perspective from {analytics['total_reviews']} total recorded customer experiences.")
@@ -838,7 +826,7 @@ elif "Detail" in st.session_state.current_page:
             })
             
         for r_item in all_revs_to_show[:15]:
-            st.markdown(f"""
+            render_html(f"""
             <div style="background:white; border-radius:8px; padding:0.8rem; margin-bottom:0.5rem; border:1px solid #E2E8F0;">
                 <div style="display:flex; justify-content:space-between;">
                     <strong>{r_item['author']}</strong>
@@ -847,11 +835,11 @@ elif "Detail" in st.session_state.current_page:
                 <div style="color:#F59E0B; font-size:0.85rem;">{'★'*r_item['rating']} &bull; <span class="badge badge-teal">{r_item['sentiment'].upper()}</span></div>
                 <div style="font-size:0.85rem; color:#334155; margin-top:0.25rem;">{r_item['text']}</div>
             </div>
-            """, unsafe_allow_html=True)
+            """)
 
 # PAGE 3: CONTEXTUAL RECOMMENDATIONS
 elif "Recommendations" in st.session_state.current_page:
-    st.markdown('<div class="section-head">🎯 Context-Aware Dining Recommendations</div>', unsafe_allow_html=True)
+    render_html('<div class="section-head">🎯 Context-Aware Dining Recommendations</div>')
     st.markdown("""
     Our multi-criteria algorithm blends four objective signals:
     **50% Customer Experience Sentiment** + **25% Zomato Community Rating** + **15% Verified Municipal Safety Score** + **10% Dining Context Tag Matching**.
@@ -924,49 +912,49 @@ elif "Recommendations" in st.session_state.current_page:
             tags = item["matched_tags"]
             
             s_display = f"{bd['safety_score']} / 100" if bd["safety_score"] is not None else "Unavailable (re-weighted)"
+            tag_badges = " ".join([f'<span class="badge badge-teal">{t.replace("_", " ").title()}</span>' for t in tags])
             
-            tag_badges = "".join([f'<span class="badge badge-teal">{t.replace("_", " ").title()}</span>' for t in tags])
-            
-            st.markdown(f"""
-            <div class="resto-card" style="border-left:5px solid #0F766E;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                    <div>
-                        <span class="badge badge-indigo">Rank #{rank} Match</span>
-                        <span style="font-size:1.35rem; font-weight:800; color:#0F172A; margin-left:0.35rem;">{r_info['name']}</span>
-                        <div class="resto-sub">📍 {r_info['neighbourhood']} &bull; 🍽️ {r_info['cuisines']} &bull; ₹{r_info['cost_for_two_inr']} for two</div>
-                        <div>{tag_badges}</div>
+            with st.container(border=True):
+                render_html(f"""
+                <div class="resto-card-inner">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <div>
+                            <span class="badge badge-indigo">Rank #{rank} Match</span>
+                            <span style="font-size:1.4rem; font-weight:800; color:#0F172A; margin-left:0.35rem;">{r_info['name']}</span>
+                            <div class="resto-sub">📍 {r_info['neighbourhood']} &bull; 🍽️ {r_info['cuisines']} &bull; ₹{r_info['cost_for_two_inr']} for two</div>
+                            <div>{tag_badges}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:1.6rem; font-weight:850; color:#0F766E;">{m_score}</div>
+                            <div style="font-size:0.75rem; color:#64748B;">Composite Match Score</div>
+                        </div>
                     </div>
-                    <div style="text-align:right;">
-                        <div style="font-size:1.6rem; font-weight:850; color:#0F766E;">{m_score}</div>
-                        <div style="font-size:0.75rem; color:#64748B;">Composite Match Score</div>
+                    
+                    <div class="score-triad" style="margin-top:0.75rem;">
+                        <div class="score-item">
+                            <div class="score-label">Sentiment (50%)</div>
+                            <div class="score-num" style="font-size:1.15rem; color:#0F766E;">{bd['sentiment_score']} <span style="font-size:0.7rem; color:#64748B;">/ 100</span></div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-label">Zomato Rating (25%)</div>
+                            <div class="score-num" style="font-size:1.15rem; color:#F59E0B;">★ {r_info['zomato_rating']:.1f}</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-label">Safety Compliance (15%)</div>
+                            <div class="score-num" style="font-size:1.1rem; color:#1E293B;">{s_display}</div>
+                        </div>
                     </div>
                 </div>
+                """)
                 
-                <div class="score-triad" style="margin-top:0.75rem;">
-                    <div class="score-item">
-                        <div class="score-label">Sentiment (50%)</div>
-                        <div class="score-num" style="font-size:1.1rem; color:#0F766E;">{bd['sentiment_score']} <span style="font-size:0.7rem; color:#64748B;">/ 100</span></div>
-                    </div>
-                    <div class="score-item">
-                        <div class="score-label">Zomato Rating (25%)</div>
-                        <div class="score-num" style="font-size:1.1rem; color:#F59E0B;">★ {r_info['zomato_rating']:.1f}</div>
-                    </div>
-                    <div class="score-item">
-                        <div class="score-label">Safety Compliance (15%)</div>
-                        <div class="score-num" style="font-size:1.05rem; color:#1E293B;">{s_display}</div>
-                    </div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            if st.button(f"View Details for {r_info['name']} ➔", key=f"btn_rec_{r_info['restaurant_id']}"):
-                st.session_state.selected_restaurant_id = r_info['restaurant_id']
-                st.session_state.current_page = "🏛️ Restaurant Detail & Review"
-                st.rerun()
+                if st.button(f"View Details for {r_info['name']} ➔", key=f"btn_rec_{r_info['restaurant_id']}", use_container_width=True):
+                    st.session_state.selected_restaurant_id = r_info['restaurant_id']
+                    st.session_state.current_page = "🏛️ Restaurant Detail & Review"
+                    st.rerun()
 
 # PAGE 4: COMPARE RESTAURANTS
 elif "Compare" in st.session_state.current_page:
-    st.markdown('<div class="section-head">⚖️ Side-by-Side Restaurant Comparison</div>', unsafe_allow_html=True)
+    render_html('<div class="section-head">⚖️ Side-by-Side Restaurant Comparison</div>')
     st.markdown("Compare 2 or 3 Kolkata dining establishments across Sentiment, Aspect Scores, Safety Compliance, and Price.")
     
     all_names = restaurants_df["name"].tolist()
@@ -1034,7 +1022,7 @@ elif "Compare" in st.session_state.current_page:
 
 # PAGE 5: AI LIVE MODEL PLAYGROUND
 elif "Playground" in st.session_state.current_page:
-    st.markdown('<div class="section-head">🧪 AI Sentiment & ABSA Model Playground</div>', unsafe_allow_html=True)
+    render_html('<div class="section-head">🧪 AI Sentiment & ABSA Model Playground</div>')
     st.markdown("Test the trained NLP and Aspect-Based Sentiment models interactively on raw review text, or run bulk batch classification.")
     
     tab_single, tab_batch = st.tabs(["Single Review Analyzer", "Batch Intelligence Evaluation"])
@@ -1073,13 +1061,13 @@ elif "Playground" in st.session_state.current_page:
                     lbl = sent_res["label"].upper()
                     conf = sent_res["confidence"] * 100.0
                     col_b = "#10B981" if lbl == "POSITIVE" else ("#F59E0B" if lbl == "NEUTRAL" else "#EF4444")
-                    st.markdown(f"""
+                    render_html(f"""
                     <div style="background:white; border-left:6px solid {col_b}; border-radius:10px; padding:1.2rem; border-top:1px solid #E2E8F0; border-right:1px solid #E2E8F0; border-bottom:1px solid #E2E8F0;">
                         <div style="font-size:0.8rem; color:#64748B; text-transform:uppercase; font-weight:700;">Predicted Sentiment</div>
                         <div style="font-size:2rem; font-weight:800; color:{col_b}; margin-top:0.2rem;">{lbl}</div>
                         <div style="font-size:0.85rem; color:#1E293B; margin-top:0.4rem;">Model Confidence: <strong>{conf:.1f}%</strong></div>
                     </div>
-                    """, unsafe_allow_html=True)
+                    """)
                     
                 with c_gauge:
                     # Probabilities Bar Chart
@@ -1109,14 +1097,14 @@ elif "Playground" in st.session_state.current_page:
                 for i, (asp_key, asp_val) in enumerate(absa_res.items()):
                     with acols[i]:
                         bg_badge = "#10B981" if asp_val == "positive" else ("#F59E0B" if asp_val == "neutral" else "#EF4444")
-                        st.markdown(f"""
+                        render_html(f"""
                         <div style="background:white; border-radius:10px; padding:0.9rem; text-align:center; border:1px solid #E2E8F0;">
                             <div style="font-size:0.85rem; font-weight:700; color:#1E293B;">{aspect_icons.get(asp_key, asp_key.capitalize())}</div>
                             <div style="background:{bg_badge}; color:white; border-radius:9999px; font-size:0.75rem; font-weight:750; padding:0.25rem 0.6rem; margin-top:0.5rem; text-transform:uppercase;">
                                 {asp_val}
                             </div>
                         </div>
-                        """, unsafe_allow_html=True)
+                        """)
                         
     with tab_batch:
         st.markdown("##### Batch CSV Sentiment Processing")
@@ -1196,7 +1184,7 @@ elif "Playground" in st.session_state.current_page:
 
 # PAGE 6: ABOUT & METHODOLOGY
 elif "About" in st.session_state.current_page:
-    st.markdown('<div class="section-head">📖 System Architecture & Methodology</div>', unsafe_allow_html=True)
+    render_html('<div class="section-head">📖 System Architecture & Methodology</div>')
     
     st.markdown("""
     ### 1. Executive Summary
