@@ -8,6 +8,4 @@ __pycache__/
 # IDE and temporary data copies
 .vscode/
 NEW DATASET/
-*.key
-presentation/*.key
 food_review_intelligence_complete/
