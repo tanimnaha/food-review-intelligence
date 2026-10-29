@@ -5,6 +5,8 @@ __pycache__/
 *$py.class
 .DS_Store
 
-# Large or temporary files
+# IDE and temporary data copies
+.vscode/
+NEW DATASET/
 *.key
 presentation/*.key
