@@ -1,0 +1,108 @@
+safety_record_id,restaurant_id,fssai_licence_no,licence_status,inspection_date,inspection_type,outcome,violations_noted,reinspection_required,data_origin
+SR00011,KOL0001,14730878182986,Active,2024-02-05,Routine,Satisfactory,utensil_hygiene;cold_storage_temperature,False,SYNTHETIC - for prototype only
+SR00012,KOL0001,14730878182986,Active,2024-03-25,Routine,Needs Improvement,utensil_hygiene,True,SYNTHETIC - for prototype only
+SR00031,KOL0003,12933484742631,Active,2024-05-28,Complaint-based,Satisfactory,drinking_water_quality,False,SYNTHETIC - for prototype only
+SR00032,KOL0003,12933484742631,Active,2024-03-08,Complaint-based,Satisfactory,cold_storage_temperature;drinking_water_quality;pest_control_lapse,False,SYNTHETIC - for prototype only
+SR00071,KOL0007,12901322311141,Active,2025-04-13,Routine,Satisfactory,none,False,SYNTHETIC - for prototype only
+SR00081,KOL0008,16186304250534,Active,2025-03-30,Pre-festive drive,Satisfactory,none,False,SYNTHETIC - for prototype only
+SR00091,KOL0009,15019608743649,Active,2025-04-23,Complaint-based,Satisfactory,none,False,SYNTHETIC - for prototype only
+SR00111,KOL0011,17557293198353,Active,2025-09-06,Pre-festive drive,Major Violations,cold_storage_temperature,True,SYNTHETIC - for prototype only
+SR00121,KOL0012,17186094864049,Active,2024-08-19,Pre-festive drive,Satisfactory,utensil_hygiene;staff_hygiene_training;pest_control_lapse,False,SYNTHETIC - for prototype only
+SR00131,KOL0013,11507954820162,Active,2026-03-05,Routine,Satisfactory,drinking_water_quality;pest_control_lapse,False,SYNTHETIC - for prototype only
+SR00141,KOL0014,12610744407246,Active,2025-02-03,Complaint-based,Satisfactory,waste_disposal;labelling_and_storage,False,SYNTHETIC - for prototype only
+SR00142,KOL0014,12610744407246,Active,2026-03-20,Routine,Major Violations,sanitation_structure,True,SYNTHETIC - for prototype only
+SR00151,KOL0015,18286163099335,Active,2025-06-22,Complaint-based,Satisfactory,cold_storage_temperature;waste_disposal;drinking_water_quality,False,SYNTHETIC - for prototype only
+SR00181,KOL0018,14089931135034,Active,2026-01-04,Routine,Satisfactory,cold_storage_temperature;utensil_hygiene,False,SYNTHETIC - for prototype only
+SR00191,KOL0019,18347143463689,Active,2024-02-05,Complaint-based,Major Violations,labelling_and_storage,True,SYNTHETIC - for prototype only
+SR00201,KOL0020,12385229871313,Active,2026-02-16,Routine,Satisfactory,waste_disposal;pest_control_lapse,False,SYNTHETIC - for prototype only
+SR00221,KOL0022,14471432950315,Active,2026-03-03,Pre-festive drive,Needs Improvement,none,True,SYNTHETIC - for prototype only
+SR00231,KOL0023,16684924033223,Active,2025-04-09,Complaint-based,Satisfactory,cooking_oil_reuse;staff_hygiene_training;waste_disposal,False,SYNTHETIC - for prototype only
+SR00232,KOL0023,16684924033223,Active,2025-06-17,Complaint-based,Satisfactory,labelling_and_storage;pest_control_lapse;staff_hygiene_training,False,SYNTHETIC - for prototype only
+SR00241,KOL0024,17762456363602,Active,2026-04-04,Pre-festive drive,Needs Improvement,none,True,SYNTHETIC - for prototype only
+SR00251,KOL0025,18924480406654,Active,2026-05-21,Routine,Satisfactory,none,False,SYNTHETIC - for prototype only
+SR00261,KOL0026,17559977990820,Active,2026-03-18,Pre-festive drive,Satisfactory,none,False,SYNTHETIC - for prototype only
+SR00271,KOL0027,16863276207566,Active,2024-06-07,Routine,Major Violations,staff_hygiene_training,True,SYNTHETIC - for prototype only
+SR00281,KOL0028,12642938349259,Renewal Due,2025-06-18,Complaint-based,Satisfactory,cooking_oil_reuse;cold_storage_temperature,False,SYNTHETIC - for prototype only
+SR00282,KOL0028,12642938349259,Active,2026-03-09,Complaint-based,Satisfactory,waste_disposal,False,SYNTHETIC - for prototype only
+SR00291,KOL0029,13711742363297,Active,2025-12-24,Complaint-based,Needs Improvement,labelling_and_storage,True,SYNTHETIC - for prototype only
+SR00301,KOL0030,15116506800494,Active,2026-04-22,Pre-festive drive,Needs Improvement,drinking_water_quality,True,SYNTHETIC - for prototype only
+SR00302,KOL0030,15116506800494,Active,2025-04-10,Routine,Satisfactory,staff_hygiene_training;cooking_oil_reuse,False,SYNTHETIC - for prototype only
+SR00311,KOL0031,17532104593614,Active,2026-01-12,Routine,Needs Improvement,none,True,SYNTHETIC - for prototype only
+SR00312,KOL0031,17532104593614,Active,2024-10-20,Routine,Satisfactory,staff_hygiene_training,False,SYNTHETIC - for prototype only
+SR00321,KOL0032,15146249593009,Active,2025-02-01,Complaint-based,Satisfactory,cold_storage_temperature;staff_hygiene_training,False,SYNTHETIC - for prototype only
+SR00331,KOL0033,19253662430412,Active,2024-04-05,Pre-festive drive,Satisfactory,waste_disposal,False,SYNTHETIC - for prototype only
+SR00341,KOL0034,18384072871692,Active,2025-04-27,Pre-festive drive,Satisfactory,pest_control_lapse;drinking_water_quality;cooking_oil_reuse,False,SYNTHETIC - for prototype only
+SR00342,KOL0034,18384072871692,Active,2024-06-10,Routine,Satisfactory,none,False,SYNTHETIC - for prototype only
+SR00351,KOL0035,12191254722336,Active,2026-03-30,Complaint-based,Major Violations,sanitation_structure,True,SYNTHETIC - for prototype only
+SR00352,KOL0035,12191254722336,Active,2024-02-28,Routine,Satisfactory,cooking_oil_reuse;drinking_water_quality,False,SYNTHETIC - for prototype only
+SR00361,KOL0036,13346480300166,Renewal Due,2024-12-26,Complaint-based,Needs Improvement,labelling_and_storage,True,SYNTHETIC - for prototype only
+SR00371,KOL0037,11650505780517,Active,2026-04-04,Complaint-based,Satisfactory,none,False,SYNTHETIC - for prototype only
+SR00381,KOL0038,16030227486614,Active,2024-03-03,Complaint-based,Needs Improvement,cooking_oil_reuse;pest_control_lapse,True,SYNTHETIC - for prototype only
+SR00391,KOL0039,14289832092413,Active,2025-01-25,Complaint-based,Major Violations,cold_storage_temperature,True,SYNTHETIC - for prototype only
+SR00401,KOL0040,16768484971888,Active,2025-04-15,Routine,Satisfactory,waste_disposal;drinking_water_quality;utensil_hygiene,False,SYNTHETIC - for prototype only
+SR00402,KOL0040,16768484971888,Active,2026-01-28,Routine,Needs Improvement,staff_hygiene_training;waste_disposal,True,SYNTHETIC - for prototype only
+SR00411,KOL0041,11549553045892,Active,2025-12-09,Routine,Needs Improvement,none,True,SYNTHETIC - for prototype only
+SR00421,KOL0042,13699838324395,Active,2025-01-28,Pre-festive drive,Satisfactory,none,False,SYNTHETIC - for prototype only
+SR00422,KOL0042,13699838324395,Active,2025-01-24,Routine,Satisfactory,utensil_hygiene;pest_control_lapse,False,SYNTHETIC - for prototype only
+SR00431,KOL0043,14772898014310,Active,2025-05-31,Pre-festive drive,Satisfactory,cold_storage_temperature,False,SYNTHETIC - for prototype only
+SR00432,KOL0043,14772898014310,Active,2025-04-14,Pre-festive drive,Major Violations,drinking_water_quality,True,SYNTHETIC - for prototype only
+SR00441,KOL0044,19947969474662,Active,2024-08-07,Pre-festive drive,Needs Improvement,labelling_and_storage,True,SYNTHETIC - for prototype only
+SR00451,KOL0045,12519921265064,Active,2026-01-18,Complaint-based,Needs Improvement,staff_hygiene_training;labelling_and_storage;cooking_oil_reuse,True,SYNTHETIC - for prototype only
+SR00481,KOL0048,16347891479944,Active,2026-01-10,Pre-festive drive,Satisfactory,cold_storage_temperature;waste_disposal,False,SYNTHETIC - for prototype only
+SR00491,KOL0049,13712618221534,Active,2026-01-21,Routine,Needs Improvement,pest_control_lapse;staff_hygiene_training,True,SYNTHETIC - for prototype only
+SR00501,KOL0050,11535320390996,Active,2025-07-26,Pre-festive drive,Satisfactory,labelling_and_storage;cold_storage_temperature,False,SYNTHETIC - for prototype only
+SR00511,KOL0051,19518705229774,Active,2025-09-27,Complaint-based,Satisfactory,drinking_water_quality;utensil_hygiene,False,SYNTHETIC - for prototype only
+SR00521,KOL0052,12701412114074,Active,2025-02-11,Pre-festive drive,Needs Improvement,utensil_hygiene;staff_hygiene_training;cold_storage_temperature,True,SYNTHETIC - for prototype only
+SR00541,KOL0054,19892271265051,Active,2024-08-22,Complaint-based,Satisfactory,none,False,SYNTHETIC - for prototype only
+SR00551,KOL0055,18581078973891,Active,2026-01-28,Pre-festive drive,Satisfactory,drinking_water_quality;pest_control_lapse;utensil_hygiene,False,SYNTHETIC - for prototype only
+SR00561,KOL0056,13263958054440,Active,2026-04-07,Complaint-based,Major Violations,waste_disposal,True,SYNTHETIC - for prototype only
+SR00571,KOL0057,13621892801489,Renewal Due,2024-06-06,Pre-festive drive,Satisfactory,waste_disposal;utensil_hygiene,False,SYNTHETIC - for prototype only
+SR00572,KOL0057,13621892801489,Active,2026-05-26,Complaint-based,Satisfactory,labelling_and_storage;drinking_water_quality,False,SYNTHETIC - for prototype only
+SR00591,KOL0059,15670667800199,Active,2026-03-19,Routine,Satisfactory,pest_control_lapse,False,SYNTHETIC - for prototype only
+SR00592,KOL0059,15670667800199,Active,2025-07-04,Pre-festive drive,Satisfactory,waste_disposal;staff_hygiene_training;drinking_water_quality,False,SYNTHETIC - for prototype only
+SR00601,KOL0060,18263440089846,Active,2025-06-11,Pre-festive drive,Needs Improvement,pest_control_lapse;drinking_water_quality;cold_storage_temperature,True,SYNTHETIC - for prototype only
+SR00602,KOL0060,18263440089846,Active,2024-12-12,Pre-festive drive,Major Violations,staff_hygiene_training,True,SYNTHETIC - for prototype only
+SR00611,KOL0061,15650132372257,Active,2024-09-23,Pre-festive drive,Satisfactory,utensil_hygiene;waste_disposal,False,SYNTHETIC - for prototype only
+SR00612,KOL0061,15650132372257,Active,2024-08-14,Pre-festive drive,Needs Improvement,drinking_water_quality;utensil_hygiene;waste_disposal,True,SYNTHETIC - for prototype only
+SR00621,KOL0062,17944876907801,Active,2026-04-17,Pre-festive drive,Satisfactory,none,False,SYNTHETIC - for prototype only
+SR00631,KOL0063,13414938225691,Active,2025-09-06,Pre-festive drive,Satisfactory,none,False,SYNTHETIC - for prototype only
+SR00641,KOL0064,12767260517990,Active,2024-01-20,Complaint-based,Major Violations,staff_hygiene_training,True,SYNTHETIC - for prototype only
+SR00642,KOL0064,12767260517990,Active,2025-05-17,Routine,Satisfactory,drinking_water_quality;waste_disposal,False,SYNTHETIC - for prototype only
+SR00661,KOL0066,17987208288673,Active,2026-02-19,Pre-festive drive,Major Violations,pest_control_lapse,True,SYNTHETIC - for prototype only
+SR00671,KOL0067,13361968132163,Active,2024-07-30,Complaint-based,Needs Improvement,waste_disposal;drinking_water_quality,True,SYNTHETIC - for prototype only
+SR00672,KOL0067,13361968132163,Active,2026-01-19,Routine,Satisfactory,cooking_oil_reuse;labelling_and_storage,False,SYNTHETIC - for prototype only
+SR00681,KOL0068,16770354192116,Active,2024-04-21,Routine,Satisfactory,labelling_and_storage,False,SYNTHETIC - for prototype only
+SR00691,KOL0069,11200028985107,Active,2025-12-24,Routine,Satisfactory,none,False,SYNTHETIC - for prototype only
+SR00701,KOL0070,17465192957343,Active,2024-05-30,Complaint-based,Satisfactory,drinking_water_quality;utensil_hygiene;labelling_and_storage,False,SYNTHETIC - for prototype only
+SR00702,KOL0070,17465192957343,Active,2026-02-28,Pre-festive drive,Satisfactory,utensil_hygiene,False,SYNTHETIC - for prototype only
+SR00711,KOL0071,12973813075084,Active,2025-06-15,Pre-festive drive,Satisfactory,waste_disposal,False,SYNTHETIC - for prototype only
+SR00721,KOL0072,19980342349022,Active,2025-04-23,Pre-festive drive,Satisfactory,labelling_and_storage;cooking_oil_reuse;pest_control_lapse,False,SYNTHETIC - for prototype only
+SR00731,KOL0073,14834314033913,Active,2025-03-23,Routine,Satisfactory,none,False,SYNTHETIC - for prototype only
+SR00732,KOL0073,14834314033913,Active,2024-03-25,Routine,Major Violations,pest_control_lapse,True,SYNTHETIC - for prototype only
+SR00761,KOL0076,13084552798873,Active,2025-02-20,Complaint-based,Satisfactory,pest_control_lapse,False,SYNTHETIC - for prototype only
+SR00771,KOL0077,17087947028930,Active,2026-06-29,Pre-festive drive,Needs Improvement,none,True,SYNTHETIC - for prototype only
+SR00781,KOL0078,12182001120234,Active,2025-04-16,Routine,Satisfactory,none,False,SYNTHETIC - for prototype only
+SR00791,KOL0079,15120116013939,Active,2025-08-28,Pre-festive drive,Satisfactory,utensil_hygiene;waste_disposal,False,SYNTHETIC - for prototype only
+SR00792,KOL0079,15120116013939,Active,2025-07-01,Pre-festive drive,Satisfactory,cooking_oil_reuse;pest_control_lapse,False,SYNTHETIC - for prototype only
+SR00801,KOL0080,11826762395930,Active,2025-12-02,Complaint-based,Satisfactory,staff_hygiene_training;utensil_hygiene,False,SYNTHETIC - for prototype only
+SR00811,KOL0081,13360213343014,Renewal Due,2024-08-10,Complaint-based,Satisfactory,none,False,SYNTHETIC - for prototype only
+SR00821,KOL0082,11694079265140,Active,2026-03-04,Complaint-based,Satisfactory,labelling_and_storage,False,SYNTHETIC - for prototype only
+SR00831,KOL0083,13064768913840,Renewal Due,2025-05-19,Pre-festive drive,Major Violations,staff_hygiene_training,True,SYNTHETIC - for prototype only
+SR00832,KOL0083,13064768913840,Active,2024-12-09,Complaint-based,Needs Improvement,labelling_and_storage;cooking_oil_reuse;drinking_water_quality,True,SYNTHETIC - for prototype only
+SR00841,KOL0084,19262324852878,Active,2025-01-28,Routine,Satisfactory,none,False,SYNTHETIC - for prototype only
+SR00851,KOL0085,18347486503885,Active,2024-12-17,Pre-festive drive,Satisfactory,labelling_and_storage,False,SYNTHETIC - for prototype only
+SR00861,KOL0086,19631765830084,Active,2026-04-08,Pre-festive drive,Satisfactory,labelling_and_storage,False,SYNTHETIC - for prototype only
+SR00871,KOL0087,18254227181265,Active,2024-09-07,Complaint-based,Satisfactory,pest_control_lapse,False,SYNTHETIC - for prototype only
+SR00881,KOL0088,11276973225593,Active,2025-03-11,Pre-festive drive,Satisfactory,cooking_oil_reuse;pest_control_lapse,False,SYNTHETIC - for prototype only
+SR00891,KOL0089,15239772230997,Active,2024-09-29,Complaint-based,Needs Improvement,staff_hygiene_training;pest_control_lapse,True,SYNTHETIC - for prototype only
+SR00901,KOL0090,12640813590996,Active,2025-08-02,Routine,Satisfactory,none,False,SYNTHETIC - for prototype only
+SR00921,KOL0092,15769455956746,Active,2025-12-15,Complaint-based,Major Violations,sanitation_structure,True,SYNTHETIC - for prototype only
+SR00931,KOL0093,18008617408691,Active,2025-08-14,Pre-festive drive,Satisfactory,drinking_water_quality;utensil_hygiene;labelling_and_storage,False,SYNTHETIC - for prototype only
+SR00941,KOL0094,12339336909284,Active,2025-10-04,Complaint-based,Major Violations,drinking_water_quality,True,SYNTHETIC - for prototype only
+SR00951,KOL0095,17685806676812,Active,2024-11-12,Routine,Needs Improvement,none,True,SYNTHETIC - for prototype only
+SR00961,KOL0096,12874154936764,Active,2024-11-25,Complaint-based,Satisfactory,cold_storage_temperature;labelling_and_storage,False,SYNTHETIC - for prototype only
+SR00971,KOL0097,11216402949080,Active,2026-03-22,Routine,Satisfactory,waste_disposal,False,SYNTHETIC - for prototype only
+SR00981,KOL0098,15855179964849,Active,2026-03-26,Pre-festive drive,Satisfactory,utensil_hygiene;drinking_water_quality,False,SYNTHETIC - for prototype only
+SR00991,KOL0099,16842855006681,Active,2026-06-15,Pre-festive drive,Satisfactory,staff_hygiene_training;labelling_and_storage,False,SYNTHETIC - for prototype only
+SR00992,KOL0099,16842855006681,Active,2025-09-14,Complaint-based,Satisfactory,utensil_hygiene;labelling_and_storage,False,SYNTHETIC - for prototype only
+SR01001,KOL0100,16730527577294,Renewal Due,2026-03-29,Routine,Satisfactory,none,False,SYNTHETIC - for prototype only

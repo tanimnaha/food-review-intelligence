@@ -1,0 +1,7 @@
+# Pinned dependencies for Kolkata FoodLens (Python 3.12)
+streamlit==1.66.1
+pandas==2.3.3
+numpy==2.5.4
+scikit-learn==1.9.1
+joblib==1.6.0
+plotly==6.9.0

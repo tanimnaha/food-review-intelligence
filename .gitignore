@@ -1,0 +1,10 @@
+# Python virtualenv & cache
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.DS_Store
+
+# Large or temporary files
+*.key
+presentation/*.key

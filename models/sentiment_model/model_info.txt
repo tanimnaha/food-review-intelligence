@@ -1,0 +1,3 @@
+Selected Model: TF-IDF + LogisticRegression
+Macro F1: 0.6537
+Accuracy: 0.7118
