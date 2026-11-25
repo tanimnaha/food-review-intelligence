@@ -29,7 +29,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 # Setup module search paths
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "models"))

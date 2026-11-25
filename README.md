@@ -42,7 +42,7 @@ where $a$ is the aspect target span, $c \in \mathcal{C}$ is one of 9 culinary ca
    - Bidirectional LSTM contextualizer with a graph-guided syntactic self-attention mask.
    - 5 joint multi-task prediction heads: Aspect BIO tagger, Opinion BIO tagger, 9-class Category head, 3-class Polarity head, and Implicit flag head.
 
-4. **Production Web Application (`streamlit_app/app.py`)**:
+4. **Production Web Application (`streamlit_app.py`)**:
    - Real-time displaCy SVG dependency tree rendering.
    - Mined ACOS quadruple inspection cards with explicit/implicit badges.
    - Automated Polarity Blindness alerts and batch CSV extraction with full syntactic provenance.
@@ -95,8 +95,7 @@ Evaluated on the held-out benchmark split (`data/acos_dataset/test.jsonl`, 150 i
 │   ├── evaluate_acos.py                # Rigorous evaluation & ablation benchmark
 │   ├── build_academic_presentation.py  # Amity PPTX and PDF presentation generator
 │   └── generate_wprs.py                # 14-week WPR document generator (17.08.26 - 20.11.26)
-├── streamlit_app/
-│   └── app.py                          # Master unified 9-tab Streamlit dashboard
+├── streamlit_app.py                    # Master unified 10-tab Streamlit dashboard + AI Chatbot
 ├── tests/
 │   ├── test_syntax_graph.py            # Unit tests for dependency trees & SDP
 │   ├── test_implicit_detector.py       # Unit tests for implicit opinion archetypes
@@ -157,7 +156,7 @@ python src/evaluate_acos.py
 
 ### 5. Launch Interactive Streamlit Dashboard
 ```bash
-streamlit run streamlit_app/app.py
+streamlit run streamlit_app.py
 # Opens dashboard at http://localhost:8501
 ```
 
