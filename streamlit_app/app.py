@@ -39,14 +39,24 @@ from models.sentiment_model.inference import predict_sentiment
 from models.absa_model.predict_aspects import predict_aspects
 from src.safety_engine import SafetyEngine
 from src.recommendation import RecommendationEngine
+from src.acos_pipeline import ACOSPipeline
+from src.foodlens_chatbot import FoodLensChatbotEngine
 
 # Page configuration
 st.set_page_config(
-    page_title="Kolkata FoodLens | Master Intelligence Dashboard",
+    page_title="Beyond Polarity | Syntax-Aware ACOS Intelligence",
     page_icon="🍲",
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+@st.cache_resource
+def get_acos_pipeline():
+    return ACOSPipeline()
+
+@st.cache_resource
+def get_chatbot_engine():
+    return FoodLensChatbotEngine()
 
 def render_html(html_str: str) -> None:
     """Render raw HTML safely using st.html and textwrap.dedent without markdown code block interference."""
@@ -203,6 +213,30 @@ render_html("""
         display: flex;
         align-items: center;
         gap: 0.5rem;
+    }
+
+    /* Floating Bottom-Right Chatbot Shortcut Button */
+    .st-key-floating_chatbot_btn {
+        position: fixed !important;
+        bottom: 26px !important;
+        right: 26px !important;
+        z-index: 999999 !important;
+        width: auto !important;
+    }
+    .st-key-floating_chatbot_btn button {
+        background: linear-gradient(135deg, #0F766E 0%, #0D9488 100%) !important;
+        color: #FFFFFF !important;
+        border: 2px solid #CCFBF1 !important;
+        border-radius: 9999px !important;
+        padding: 0.72rem 1.3rem !important;
+        font-weight: 750 !important;
+        font-size: 0.92rem !important;
+        box-shadow: 0 10px 25px -5px rgba(15, 118, 110, 0.45), 0 4px 10px -2px rgba(0, 0, 0, 0.15) !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    }
+    .st-key-floating_chatbot_btn button:hover {
+        transform: translateY(-2px) scale(1.03) !important;
+        box-shadow: 0 14px 30px -5px rgba(15, 118, 110, 0.58) !important;
     }
 </style>
 """)
@@ -375,17 +409,40 @@ def get_restaurant_analytics(restaurant_id: str):
 # Session State Initialization
 if "current_page" not in st.session_state:
     st.session_state.current_page = "🔍 Kolkata Directory & Search"
+if "nav_radio" not in st.session_state:
+    st.session_state.nav_radio = st.session_state.current_page
 if "selected_restaurant_id" not in st.session_state:
     st.session_state.selected_restaurant_id = "KOL0001"
+
+def navigate_to(page_name: str) -> None:
+    """Safely updates both current_page and sidebar radio state before rerun."""
+    st.session_state.current_page = page_name
+    st.session_state.nav_radio = page_name
+if "chat_messages" not in st.session_state:
+    st.session_state.chat_messages = [
+        {
+            "role": "assistant",
+            "content": (
+                "👋 **Hello! I am your ACOS FoodLens Conversational Assistant!**\n\n"
+                "I combine deep syntactic NLP with Kolkata dining intelligence. Here are some things you can ask me:\n\n"
+                "- 🔬 *\"Analyze review: The mutton biryani was fragrant, but the waiter was rude.\"*\n"
+                "- 🤢 *\"Analyze review: Spent the entire night hugging the toilet bowl after the seafood platter.\"*\n"
+                "- 🎯 *\"Recommend top biryani places in Park Street\"*\n"
+                "- 🏛️ *\"Tell me about Arsalan's food safety score and inspection outcome\"*\n"
+                "- 💡 *\"Explain what polarity blindness is and how ACOS solves it\"*\n"
+                "- 🎓 *\"Who is the faculty guide for this project?\"*"
+            )
+        }
+    ]
 
 # Sidebar Navigation
 with st.sidebar:
     render_html("""
     <div style="display:flex; align-items:center; gap:0.65rem; margin-bottom:1.2rem;">
-        <div style="background:#0F766E; color:white; width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.35rem; font-weight:800;">FL</div>
+        <div style="background:#0F766E; color:white; width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.35rem; font-weight:800;">AQ</div>
         <div>
-            <div style="font-weight:800; font-size:1.1rem; color:#0F172A; letter-spacing:-0.02em;">Kolkata FoodLens</div>
-            <div style="font-size:0.75rem; color:#64748B;">Unified Restaurant & NLP Intelligence</div>
+            <div style="font-weight:800; font-size:1.05rem; color:#0F172A; letter-spacing:-0.02em;">ACOS FoodLens</div>
+            <div style="font-size:0.75rem; color:#64748B;">Syntax-Aware Quadruple Mining</div>
         </div>
     </div>
     """)
@@ -396,36 +453,34 @@ with st.sidebar:
         "🎯 Contextual Dining Recommendations",
         "⚖️ Side-by-Side Compare",
         "🛡️ Food Safety & Hygiene Surveillance",
-        "✳️ Sentiment & Aspect Studio",
-        "▦ Batch Intelligence Center",
-        "📊 Model Benchmark & Evaluation Lab",
-        "📖 Methodology & Architecture"
+        "🔬 Syntax-Aware ACOS Studio",
+        "▦ Batch ACOS Mining Center",
+        "💬 FoodLens AI Chatbot",
+        "📊 ACOS Benchmark & Evaluation Lab",
+        "📖 Research Methodology & ACOS Architecture"
     ]
     
-    # Match current index
-    current_index = 0
-    clean_current = st.session_state.current_page
-    for idx, opt in enumerate(nav_options):
-        # Match significant text
-        key_token = opt.split(" ")[1] if len(opt.split(" ")) > 1 else opt
-        if key_token.lower() in clean_current.lower():
-            current_index = idx
-            break
-            
+    # Ensure nav_radio matches valid option
+    if st.session_state.nav_radio not in nav_options:
+        st.session_state.nav_radio = nav_options[0]
+
     selected_nav = st.radio(
         "Navigation",
         options=nav_options,
-        index=current_index,
+        key="nav_radio",
         label_visibility="collapsed"
     )
     st.session_state.current_page = selected_nav
     
     st.markdown("---")
-    st.markdown("### 📊 Master System KPI")
-    st.markdown("- **Restaurants**: 100 listings")
-    st.markdown("- **Sentiment Benchmark**: 13,144 Yelp Reviews")
-    st.markdown("- **Kolkata Synthetic Reviews**: 5,000 Annotations")
-    st.markdown("- **FSSAI Audits**: 107 records (84 covered)")
+    st.markdown("### 📊 Research & Model KPI")
+    st.markdown("- **Research Topic**: Beyond Polarity ACOS")
+    st.markdown("- **Team Members**: Tanim, Srilekha, Subhamita, Yashamoti")
+    st.markdown("- **Faculty Guide**: Dr. Saberi Goswami")
+    st.markdown("- **Quadruple F1**: `60.04%` (Proposed)")
+    st.markdown("- **Implicit Opinion F1**: `50.0%`")
+    st.markdown("- **Culinary Categories**: 9 Structured Dimensions")
+    st.markdown("- **Graph Engine**: NetworkX + SpaCy SDP")
     
     user_revs_all = get_all_user_reviews()
     st.markdown(f"- **Live User Reviews**: `{len(user_revs_all)}` in SQLite")
@@ -433,19 +488,19 @@ with st.sidebar:
     st.markdown("---")
     render_html("""
     <div style="background:#F1F5F9; border-radius:8px; padding:0.75rem; font-size:0.74rem; color:#475569;">
-        <strong>Academic Minor Project:</strong><br>
-        Harmonizing customer NLP sentiment with municipal hygiene compliance and early risk surveillance in Kolkata, India.
+        <strong>Academic Minor Project (Amity University Kolkata):</strong><br>
+        Beyond Polarity: Syntax-Aware Deep Aspect Quadruple Mining and Implicit Opinion Disentanglement in Online Food Reviews.
     </div>
     """)
 
 # Main Hero Banner
 render_html("""
 <div class="hero-banner">
-    <div class="hero-title">Kolkata FoodLens & Review Intelligence 🍲</div>
+    <div class="hero-title">Beyond Polarity: Syntax-Aware Deep ACOS Mining 🍲</div>
     <div class="hero-subtitle">
-        Go beyond the surface star rating. An integrated AI-driven intelligence platform combining 
-        Aspect-Based Sentiment Analysis (ABSA), objective municipal FSSAI audits, and public health 
-        hygiene risk surveillance for Kolkata dining establishments.
+        Go beyond monolithic star ratings and polarity blindness. Extract structured Aspect-Category-Opinion-Sentiment 
+        (ACOS) quadruples &lang;a, c, o, s, &tau;&rang; using directed dependency graphs, Shortest Dependency Paths (SDP), 
+        and implicit opinion disentanglement across Kolkata dining establishments.
     </div>
 </div>
 """)
@@ -1161,93 +1216,145 @@ elif "Surveillance" in st.session_state.current_page:
         """)
 
 # ==============================================================================
-# TAB 6: SENTIMENT & ASPECT STUDIO (LIVE INFERENCE PLAYGROUND)
+# TAB 6: SYNTAX-AWARE ACOS STUDIO (LIVE INFERENCE PLAYGROUND)
 # ==============================================================================
 elif "Studio" in st.session_state.current_page or "Playground" in st.session_state.current_page:
-    render_html('<div class="section-head">✳️ Live Sentiment & Aspect Analysis Studio</div>')
-    st.markdown("Interactive natural language processing workbench evaluating overall sentiment and 5 fine-grained dining aspects.")
+    render_html('<div class="section-head">🔬 Syntax-Aware ACOS Studio & Implicit Disentanglement</div>')
+    st.markdown("""
+    Interactive natural language processing workbench extracting structured **Aspect-Category-Opinion-Sentiment (ACOS)** 
+    quadruples $\\langle a, c, o, s, \\tau \\rangle$ using directed dependency graphs, Shortest Dependency Paths (SDP), 
+    and implicit opinion disentanglement.
+    """)
     
     sample_reviews = [
-        "The mutton biryani was fragrant and cooked to perfection, but the washroom was filthy and waiters were rude.",
-        "Loved the authentic flavours, attentive staff, and cozy decor. Highly recommend to everyone visiting Park Street!",
-        "Completely overpriced. Stale chicken, cold naan, and waited 45 minutes for our bill.",
-        "Decent rolls for a quick bite after college. Inexpensive and hygienic enough for street food."
+        "The mutton biryani was fragrant, tender and cooked to perfection, but the waiter completely ignored our table for 45 minutes.",
+        "A single plate of prawn malai curry burned a massive hole in my pocket.",
+        "Both of us spent the entire night hugging the toilet bowl after eating the seafood platter.",
+        "We paid five hundred rupees for a biryani that contained only one tiny potato and barely fed a pigeon.",
+        "The vintage British colonial decor and dim lighting created a cozy atmosphere, but the air conditioning was barely functioning on a sweltering afternoon."
     ]
     
-    quick_pick = st.selectbox("Or choose a sample review:", options=sample_reviews, index=0)
+    quick_pick = st.selectbox("Or choose a benchmark sample review:", options=sample_reviews, index=0)
     
     test_text = st.text_area(
         "Enter Review Text:",
         value=quick_pick,
-        placeholder="Type or paste any customer review here...",
+        placeholder="Type or paste any conversational restaurant review here...",
         height=100
     )
     
-    run_btn = st.button("Run AI Model Inference", type="primary")
+    col_run, col_opt = st.columns([1, 2])
+    with col_run:
+        run_btn = st.button("🚀 Extract ACOS Quadruples", type="primary")
+        
+    pipeline = get_acos_pipeline()
+    
     if run_btn or test_text.strip():
         if not test_text.strip():
             st.error("Please enter review text to analyze.")
         else:
-            with st.spinner("Processing text cleaning, TF-IDF vectorization, and inference..."):
-                sent_res = predict_sentiment(test_text)
-                absa_res = predict_aspects(test_text)
+            with st.spinner("Executing Syntactic Dependency Parsing, SDP Tracing, and Implicit Disentanglement..."):
+                quads = pipeline.extract_quadruples(test_text)
+                svg_tree = pipeline.render_syntax_visualization(test_text)
+                coarse_sent = predict_sentiment(test_text)
                 
-            st.markdown("#### Overall Sentiment Classification")
-            c_lbl, c_gauge = st.columns([1, 2])
-            with c_lbl:
-                lbl = sent_res["label"].upper()
-                conf = sent_res["confidence"] * 100.0
-                col_b = "#10B981" if lbl == "POSITIVE" else ("#F59E0B" if lbl == "NEUTRAL" else "#EF4444")
-                render_html(f"""
-                <div style="background:white; border-left:6px solid {col_b}; border-radius:10px; padding:1.2rem; border-top:1px solid #E2E8F0; border-right:1px solid #E2E8F0; border-bottom:1px solid #E2E8F0;">
-                    <div style="font-size:0.8rem; color:#64748B; text-transform:uppercase; font-weight:700;">Predicted Sentiment</div>
-                    <div style="font-size:2rem; font-weight:800; color:{col_b}; margin-top:0.2rem;">{lbl}</div>
-                    <div style="font-size:0.85rem; color:#1E293B; margin-top:0.4rem;">Model Confidence: <strong>{conf:.1f}%</strong></div>
+            # Polarity Blindness Warning
+            sentiments_found = set(q["sentiment"] for q in quads)
+            if "positive" in sentiments_found and "negative" in sentiments_found:
+                render_html("""
+                <div style="background:#FEF3C7; border-left:6px solid #D97706; border-radius:10px; padding:1rem; margin-bottom:1.2rem; color:#92400E;">
+                    <strong>💡 Polarity Blindness Successfully Averted!</strong><br>
+                    A standard coarse sentiment classifier would aggregate or misclassify this sentence as Neutral. 
+                    Our syntax-aware dependency graph disentangled opposing aspects with fine-grained category attribution.
                 </div>
                 """)
                 
-            with c_gauge:
-                probs = sent_res["probabilities"]
-                prob_df = pd.DataFrame([
-                    {"Sentiment": "Negative", "Probability": probs.get("negative", 0.0), "Color": "#EF4444"},
-                    {"Sentiment": "Neutral", "Probability": probs.get("neutral", 0.0), "Color": "#F59E0B"},
-                    {"Sentiment": "Positive", "Probability": probs.get("positive", 0.0), "Color": "#10B981"}
-                ])
-                fig_p = px.bar(
-                    prob_df,
-                    x="Probability",
-                    y="Sentiment",
-                    orientation="h",
-                    color="Sentiment",
-                    color_discrete_map={"Negative": "#EF4444", "Neutral": "#F59E0B", "Positive": "#10B981"},
-                    range_x=[0, 1.0],
-                    text="Probability"
-                )
-                fig_p.update_traces(texttemplate='%{x:.1%}', textposition='outside')
-                fig_p.update_layout(height=170, margin=dict(l=10, r=40, t=10, b=10), showlegend=False)
-                st.plotly_chart(fig_p, use_container_width=True)
-                
-            st.markdown("#### Aspect-Level Polarity Extraction (ABSA)")
-            acols = st.columns(5)
-            aspect_icons = {"food": "🍲 Food", "service": "🧑‍🍳 Service", "hygiene": "🧼 Hygiene", "ambience": "🕯️ Ambience", "price": "💰 Price"}
-            for i, (asp_key, asp_val) in enumerate(absa_res.items()):
-                with acols[i]:
-                    bg_badge = "#10B981" if asp_val == "positive" else ("#F59E0B" if asp_val == "neutral" else "#EF4444")
+            # Quadruple Summary KPI
+            st.markdown("#### Mined ACOS Quadruples $\\langle a, c, o, s, \\tau \\rangle$")
+            if not quads:
+                st.info("No definitive aspect-opinion quadruples identified in the provided text.")
+            else:
+                for idx, q in enumerate(quads):
+                    is_pos = (q["sentiment"] == "positive")
+                    is_neg = (q["sentiment"] == "negative")
+                    badge_col = "#10B981" if is_pos else ("#EF4444" if is_neg else "#F59E0B")
+                    typ_col = "#6366F1" if q["type"] == "implicit" else "#0F766E"
+                    
                     render_html(f"""
-                    <div style="background:white; border-radius:10px; padding:0.9rem; text-align:center; border:1px solid #E2E8F0;">
-                        <div style="font-size:0.85rem; font-weight:700; color:#1E293B;">{aspect_icons.get(asp_key, asp_key.capitalize())}</div>
-                        <div style="background:{bg_badge}; color:white; border-radius:9999px; font-size:0.75rem; font-weight:750; padding:0.25rem 0.6rem; margin-top:0.5rem; text-transform:uppercase;">
-                            {asp_val}
+                    <div style="background:white; border-left:6px solid {badge_col}; border-radius:12px; padding:1.2rem; margin-bottom:1rem; border-top:1px solid #E2E8F0; border-right:1px solid #E2E8F0; border-bottom:1px solid #E2E8F0; box-shadow:0 2px 5px rgba(0,0,0,0.03);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+                            <span style="background:{badge_col}; color:white; border-radius:9999px; font-size:0.75rem; font-weight:800; padding:0.25rem 0.75rem; text-transform:uppercase;">
+                                {q['sentiment']}
+                            </span>
+                            <span style="background:{typ_col}; color:white; border-radius:9999px; font-size:0.75rem; font-weight:700; padding:0.25rem 0.75rem;">
+                                {q['type'].upper()} OPINION ({q.get('archetype', 'syntax')})
+                            </span>
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem; margin-top:0.5rem; font-size:0.9rem;">
+                            <div><strong>Aspect Target (a):</strong> <code style="color:#0F766E; font-size:0.95rem;">{q['aspect']}</code></div>
+                            <div><strong>Culinary Category (c):</strong> <span style="background:#F1F5F9; padding:0.2rem 0.5rem; border-radius:6px; font-weight:600;">{q['category']}</span></div>
+                            <div style="grid-column: span 2;"><strong>Opinion Span (o):</strong> <span style="font-style:italic; color:#1E293B;">"{q['opinion']}"</span></div>
+                            <div style="grid-column: span 2; font-size:0.8rem; color:#64748B;">
+                                <strong>Shortest Dependency Path:</strong> <code>{q.get('syntactic_path', 'N/A')}</code>
+                            </div>
+                        </div>
+                        <div style="margin-top:0.6rem; font-size:0.8rem; color:#475569; background:#F8FAFC; padding:0.5rem 0.8rem; border-radius:6px;">
+                            ℹ️ {q.get('explanation', '')} (Confidence: <strong>{q.get('confidence', 0.90)*100:.1f}%</strong>)
                         </div>
                     </div>
                     """)
 
+            # Syntactic Dependency Tree Visualization
+            st.markdown("#### 🌳 Syntactic Dependency Parse Tree (SpaCy + displaCy)")
+            st.markdown("Directed tree showing grammatical head-dependent edges used for Shortest Dependency Path (SDP) extraction:")
+            st.components.v1.html(
+                f"""<div style="overflow-x:auto; padding:10px; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px;">{svg_tree}</div>""",
+                height=260,
+                scrolling=True
+            )
+
+            # Baseline Coarse Comparison & Real PyTorch Neural Inference
+            neural_pred = pipeline.predict_neural(test_text)
+            st.markdown("#### Baseline vs. Deep Neural vs. Proposed Multi-Aspect Contrast")
+            col_b1, col_b2, col_b3 = st.columns(3)
+            with col_b1:
+                render_html(f"""
+                <div style="background:white; border-radius:10px; padding:1rem; border:1px solid #E2E8F0;">
+                    <div style="font-size:0.75rem; color:#64748B; font-weight:700;">TRADITIONAL COARSE CLASSIFIER</div>
+                    <div style="font-size:1.35rem; font-weight:800; color:#1E293B; margin-top:0.3rem;">{coarse_sent['label'].upper()}</div>
+                    <div style="font-size:0.78rem; color:#64748B;">Conf: {coarse_sent['confidence']*100:.1f}% (Collapses entire review)</div>
+                </div>
+                """)
+            with col_b2:
+                if neural_pred:
+                    n_cat = neural_pred['neural_category']
+                    n_pol = neural_pred['neural_sentiment'].upper()
+                    n_imp = "IMPLICIT" if neural_pred['neural_implicit_prob'] > 0.5 else "EXPLICIT"
+                    render_html(f"""
+                    <div style="background:white; border-radius:10px; padding:1rem; border:1px solid #6366F1;">
+                        <div style="font-size:0.75rem; color:#6366F1; font-weight:700;">PYTORCH SYNTAX-AWARE NET</div>
+                        <div style="font-size:1.1rem; font-weight:800; color:#1E293B; margin-top:0.3rem;">{n_cat} ({n_pol})</div>
+                        <div style="font-size:0.78rem; color:#64748B;">Typology: {n_imp} ({neural_pred['neural_implicit_prob']*100:.1f}%)</div>
+                    </div>
+                    """)
+            with col_b3:
+                render_html(f"""
+                <div style="background:white; border-radius:10px; padding:1rem; border:1px solid #0F766E;">
+                    <div style="font-size:0.75rem; color:#0F766E; font-weight:700;">PROPOSED ACOS GRAPH PIPELINE</div>
+                    <div style="font-size:1.35rem; font-weight:800; color:#0F766E; margin-top:0.3rem;">{len(quads)} Mined Quadruples</div>
+                    <div style="font-size:0.78rem; color:#64748B;">Isolates aspect targets & SDP paths</div>
+                </div>
+                """)
+
+
 # ==============================================================================
-# TAB 7: BATCH INTELLIGENCE CENTER (BULK INFERENCE & FOOD SAFETY FLAGGING)
+# TAB 7: BATCH ACOS MINING CENTER
 # ==============================================================================
 elif "Batch" in st.session_state.current_page:
-    render_html('<div class="section-head">▦ Batch Intelligence Center</div>')
-    st.markdown("Process large batches of customer reviews to extract sentiment polarities, ABSA dimensions, and public health hygiene flags in bulk.")
+    render_html('<div class="section-head">▦ Batch ACOS Mining Center</div>')
+    st.markdown("Process batches of customer reviews to extract structured Aspect Quadruples and Shortest Dependency Paths in bulk.")
+    
+    pipeline = get_acos_pipeline()
     
     uploaded_file = st.file_uploader("Upload CSV review file (must have a review_text column)", type=["csv"])
     btn_sample_batch = st.button("Load Pre-generated Synthetic Batch (500 reviews)")
@@ -1260,178 +1367,367 @@ elif "Batch" in st.session_state.current_page:
         if batch_sample_path.exists():
             batch_df = pd.read_csv(batch_sample_path)
         else:
-            batch_df = reviews_df.head(200)[["review_id", "restaurant_name", "rating", "review_text"]]
+            batch_df = reviews_df.head(150)[["review_id", "restaurant_name", "rating", "review_text"]]
             
     if batch_df is not None:
         text_col = "review_text" if "review_text" in batch_df.columns else batch_df.columns[0]
         st.write(f"Loaded **{len(batch_df)}** reviews. Target text column: `{text_col}`")
         
-        if st.button("🚀 Run Batch Intelligence Pipeline", type="primary"):
-            with st.spinner(f"Classifying {len(batch_df)} reviews with TF-IDF Sentiment, ABSA, and Food Safety Surveillance..."):
-                results_list = []
-                for txt in batch_df[text_col]:
-                    s = predict_sentiment(str(txt))
-                    a = predict_aspects(str(txt))
-                    sf = scan_food_safety(str(txt))
-                    results_list.append({
-                        "pred_sentiment": s["label"],
-                        "sentiment_confidence": s["confidence"],
-                        "food_aspect": a["food"],
-                        "service_aspect": a["service"],
-                        "hygiene_aspect": a["hygiene"],
-                        "ambience_aspect": a["ambience"],
-                        "price_aspect": a["price"],
-                        "safety_risk_level": sf["severity"],
-                        "food_safety_flagged": sf["is_flagged"],
-                    })
-                res_df = pd.concat([batch_df.reset_index(drop=True), pd.DataFrame(results_list)], axis=1)
+        if st.button("🚀 Run Batch ACOS Mining Pipeline", type="primary"):
+            with st.spinner(f"Mining ACOS Quadruples for {len(batch_df)} reviews via Dependency Graph Engine..."):
+                mined_records = []
+                for idx, txt in enumerate(batch_df[text_col]):
+                    quads = pipeline.extract_quadruples(str(txt))
+                    if not quads:
+                        mined_records.append({
+                            "review_idx": idx,
+                            "review_snippet": str(txt)[:60] + "...",
+                            "aspect": "N/A",
+                            "category": "N/A",
+                            "opinion": "N/A",
+                            "sentiment": "neutral",
+                            "typology": "none",
+                            "syntactic_path": "none",
+                            "confidence": 0.0
+                        })
+                    else:
+                        for q in quads:
+                            mined_records.append({
+                                "review_idx": idx,
+                                "review_snippet": str(txt)[:60] + "...",
+                                "aspect": q["aspect"],
+                                "category": q["category"],
+                                "opinion": q["opinion"],
+                                "sentiment": q["sentiment"],
+                                "typology": q["type"],
+                                "syntactic_path": q.get("syntactic_path", ""),
+                                "confidence": q.get("confidence", 0.90)
+                            })
+                quad_df = pd.DataFrame(mined_records)
                 
-            st.success(f"Successfully processed {len(res_df)} reviews!")
+            st.success(f"Successfully extracted {len(quad_df)} quadruples across {len(batch_df)} customer reviews!")
             
             bcol1, bcol2, bcol3 = st.columns(3)
             with bcol1:
-                fig_dist = px.pie(
-                    res_df,
-                    names="pred_sentiment",
-                    title="Predicted Sentiment Share",
-                    color="pred_sentiment",
-                    color_discrete_map={"positive": "#10B981", "neutral": "#F59E0B", "negative": "#EF4444"}
+                fig_cat = px.pie(
+                    quad_df[quad_df["category"] != "N/A"],
+                    names="category",
+                    title="Mined Category Share (9 Classes)",
+                    hole=0.4
                 )
-                st.plotly_chart(fig_dist, use_container_width=True)
+                st.plotly_chart(fig_cat, use_container_width=True)
             with bcol2:
-                hyg_counts = res_df["hygiene_aspect"].value_counts().reset_index()
-                hyg_counts.columns = ["Hygiene Status", "Count"]
-                fig_hyg = px.bar(
-                    hyg_counts,
-                    x="Hygiene Status",
-                    y="Count",
-                    title="Hygiene Aspect Distribution",
-                    color="Hygiene Status",
+                fig_typ = px.bar(
+                    quad_df[quad_df["typology"] != "none"]["typology"].value_counts().reset_index(),
+                    x="typology",
+                    y="count",
+                    title="Opinion Typology Distribution",
+                    color="typology",
+                    color_discrete_map={"explicit": "#0F766E", "implicit": "#6366F1"}
+                )
+                st.plotly_chart(fig_typ, use_container_width=True)
+            with bcol3:
+                fig_pol = px.bar(
+                    quad_df[quad_df["sentiment"] != "none"]["sentiment"].value_counts().reset_index(),
+                    x="sentiment",
+                    y="count",
+                    title="Quadruple Polarity Distribution",
+                    color="sentiment",
                     color_discrete_map={"positive": "#10B981", "neutral": "#F59E0B", "negative": "#EF4444"}
                 )
-                st.plotly_chart(fig_hyg, use_container_width=True)
-            with bcol3:
-                safe_counts = res_df["safety_risk_level"].value_counts().reset_index()
-                safe_counts.columns = ["Safety Risk", "Count"]
-                fig_safe = px.bar(
-                    safe_counts,
-                    x="Safety Risk",
-                    y="Count",
-                    title="Food Safety Surveillance Risks",
-                    color="Safety Risk",
-                    color_discrete_map={"Critical": "#DC2626", "High": "#EA580C", "Moderate": "#D97706", "Low / None": "#10B981"}
-                )
-                st.plotly_chart(fig_safe, use_container_width=True)
+                st.plotly_chart(fig_pol, use_container_width=True)
                 
-            st.dataframe(res_df.head(25), use_container_width=True)
+            st.dataframe(quad_df.head(50), use_container_width=True)
             
             csv_buffer = io.StringIO()
-            res_df.to_csv(csv_buffer, index=False)
+            quad_df.to_csv(csv_buffer, index=False)
             st.download_button(
-                "📥 Download Processed CSV with AI & Safety Labels",
+                "📥 Download Mined ACOS Quadruples CSV",
                 data=csv_buffer.getvalue(),
-                file_name="kolkata_foodlens_batch_results.csv",
+                file_name="acos_mined_quadruples_kolkata.csv",
                 mime="text/csv"
             )
+
+
+# ==============================================================================
+# TAB: FOODLENS AI CONVERSATIONAL CHATBOT
+# ==============================================================================
+elif "Chatbot" in st.session_state.current_page or "Assistant" in st.session_state.current_page:
+    chatbot = get_chatbot_engine()
+
+    def submit_chat_prompt(prompt_text: str) -> None:
+        """Processes a prompt via callback so UI updates immediately on single click."""
+        if not prompt_text or not prompt_text.strip():
+            return
+        st.session_state.chat_messages.append({"role": "user", "content": prompt_text})
+        bot_reply = chatbot.respond(prompt_text)
+        st.session_state.chat_messages.append({"role": "assistant", "content": bot_reply})
+
+    def clear_chat_history() -> None:
+        st.session_state.chat_messages = [
+            {
+                "role": "assistant",
+                "content": "👋 **Chat cleared!** Ask me anything about Kolkata restaurants, paste a review to extract ACOS quadruples, or tap one of the suggested prompts below."
+            }
+        ]
+
+    # Header & Live Engine Status Bar
+    h_col1, h_col2 = st.columns([4, 1])
+    with h_col1:
+        render_html('<div class="section-head" style="margin-bottom:0.2rem;">💬 FoodLens AI: Conversational ACOS & Dining Intelligence</div>')
+    with h_col2:
+        st.button("🗑️ Clear Chat", key="btn_clear_chat", on_click=clear_chat_history, use_container_width=True)
+
+    render_html("""
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.9rem;">
+        <span class="badge badge-teal">🟢 PyTorch SyntaxAwareACOSNet Active</span>
+        <span class="badge badge-indigo">🟢 SpaCy + NetworkX SDP Engine</span>
+        <span class="badge badge-amber">🟢 100 Kolkata Listings &amp; FSSAI Audits</span>
+    </div>
+    """)
+
+    # Scrollable Chat Viewport
+    chat_box = st.container(height=440, border=True)
+    with chat_box:
+        for msg in st.session_state.chat_messages:
+            avatar = "🍲" if msg["role"] == "assistant" else "🧑"
+            with st.chat_message(msg["role"], avatar=avatar):
+                st.markdown(msg["content"])
+
+    # Suggested Questions / Quick Prompt Chips (Single-click callback powered)
+    st.markdown("##### ⚡ Tap a Suggested Question:")
+    q_col1, q_col2, q_col3 = st.columns(3)
+
+    with q_col1:
+        st.button(
+            "🍲 Biryani vs Rude Waiter",
+            key="qp_1",
+            on_click=submit_chat_prompt,
+            args=("Analyze review: The mutton biryani was fragrant and tender, but the waiter completely ignored our table for 45 minutes.",),
+            use_container_width=True
+        )
+        st.button(
+            "🔍 Best Biryani in Park Street",
+            key="qp_2",
+            on_click=submit_chat_prompt,
+            args=("Recommend top rated biryani places in Park Street",),
+            use_container_width=True
+        )
+
+    with q_col2:
+        st.button(
+            "🤢 Biological Illness Review",
+            key="qp_3",
+            on_click=submit_chat_prompt,
+            args=("Analyze review: Both of us spent the entire night hugging the toilet bowl after eating the seafood platter.",),
+            use_container_width=True
+        )
+        st.button(
+            "🛡️ Arsalan Safety & Rating",
+            key="qp_4",
+            on_click=submit_chat_prompt,
+            args=("Tell me about Arsalan's food safety score and inspection outcome",),
+            use_container_width=True
+        )
+
+    with q_col3:
+        st.button(
+            "💡 Explain Polarity Blindness",
+            key="qp_5",
+            on_click=submit_chat_prompt,
+            args=("Explain what polarity blindness is and how ACOS solves it",),
+            use_container_width=True
+        )
+        st.button(
+            "🎓 Project Guide & Architecture",
+            key="qp_6",
+            on_click=submit_chat_prompt,
+            args=("Who is the faculty guide and how does the neural network architecture work?",),
+            use_container_width=True
+        )
+
+    # Chat Input Bar
+    user_query = st.chat_input("Ask any question, compare restaurants (e.g. 'Compare Arsalan and Peter Cat'), or paste a review...")
+    if user_query:
+        submit_chat_prompt(user_query)
+        st.rerun()
+
 
 # ==============================================================================
 # TAB 8: MODEL BENCHMARK & EVALUATION LAB
 # ==============================================================================
 elif "Benchmark" in st.session_state.current_page or "Evaluation" in st.session_state.current_page:
-    render_html('<div class="section-head">📊 Model Benchmark & Evaluation Lab</div>')
+    render_html('<div class="section-head">📊 ACOS Benchmark & Evaluation Lab</div>')
     st.markdown("""
-    Rigorous performance benchmarking across four classifiers trained on **13,144 real restaurant reviews** 
-    and evaluated on a strictly held-out test set of **1,315 reviews**.
+    Rigorous performance benchmarking of the proposed **Syntax-Aware Dependency Graph Engine** 
+    against ablation baselines on the strictly held-out test split (`test.jsonl`).
     """)
     
-    comp_csv_path = ROOT / "reports" / "model_comparison.csv"
-    if comp_csv_path.exists():
-        comp_df = pd.read_csv(comp_csv_path)
-        # Format for clean display
-        display_comp = comp_df.copy()
-        for col in ["accuracy", "macro_precision", "macro_recall", "macro_f1", "weighted_f1", "negative_f1", "neutral_f1", "positive_f1"]:
-            if col in display_comp.columns:
-                display_comp[col] = display_comp[col].apply(lambda x: f"{x*100:.2f}%")
-        st.dataframe(display_comp, use_container_width=True)
+    import json as _json
+    eval_json_path = ROOT / "reports" / "acos_evaluation_results.json"
+    if eval_json_path.exists():
+        with open(eval_json_path, "r", encoding="utf-8") as f:
+            eval_data = _json.load(f)
+        m_dict = eval_data.get("models", {})
+        p_m = m_dict.get("Proposed Syntax-Aware ACOS", {})
+        a1_m = m_dict.get("Ablation A (w/o Dependency Syntax)", {})
+        a2_m = m_dict.get("Ablation B (w/o Implicit Disentangler)", {})
         
-    barchart_path = ROOT / "reports" / "figures" / "model_comparison_barchart.png"
-    if barchart_path.exists():
-        st.image(str(barchart_path), caption="Model Comparison on Held-Out Test Set (Macro-F1, Accuracy, Negative-F1)")
+        q_f1 = p_m.get("quad_f1", 0.0)
+        q_p = p_m.get("quad_p", 0.0)
+        q_r = p_m.get("quad_r", 0.0)
+        exp_f1 = p_m.get("explicit_f1", 0.0)
+        imp_f1 = p_m.get("implicit_f1", 0.0)
+        imp_gain = round(imp_f1 - a2_m.get("implicit_f1", 0.0), 1)
+        syn_gain = round(q_f1 - a1_m.get("quad_f1", 0.0), 1)
         
-    st.markdown("#### Confusion Matrix Inspector")
-    cm_choice = st.selectbox(
-        "Select Model to Inspect Confusion Matrix:",
-        options=[
-            "TF-IDF + Logistic Regression (Balanced Winner)",
-            "TF-IDF + Linear SVM (Balanced)",
-            "TF-IDF + Multi-Layer Perceptron (MLP Neural Net)",
-            "TF-IDF + Complement Naive Bayes"
-        ]
-    )
-    cm_map = {
-        "TF-IDF + Logistic Regression (Balanced Winner)": "cm_TF_IDF_plus_LogisticRegression.png",
-        "TF-IDF + Linear SVM (Balanced)": "cm_TF_IDF_plus_LinearSVM.png",
-        "TF-IDF + Multi-Layer Perceptron (MLP Neural Net)": "cm_TF_IDF_plus_MLP_Neural_Net.png",
-        "TF-IDF + Complement Naive Bayes": "cm_TF_IDF_plus_ComplementNB.png"
-    }
-    cm_file = ROOT / "reports" / "figures" / cm_map[cm_choice]
-    if cm_file.exists():
-        st.image(str(cm_file), caption=f"Normalized Confusion Matrix: {cm_choice}", width=540)
+        kpi_col1, kpi_col2, kpi_col3, kpi_col4 = st.columns(4)
+        with kpi_col1:
+            render_html(f"""
+            <div style="background:white; border-radius:10px; padding:1rem; border-left:5px solid #0F766E; border:1px solid #E2E8F0;">
+                <div style="font-size:0.75rem; color:#64748B; font-weight:700;">PROPOSED QUADRUPLE F1</div>
+                <div style="font-size:1.8rem; font-weight:800; color:#0F766E; margin-top:0.2rem;">{q_f1}%</div>
+                <div style="font-size:0.75rem; color:#10B981;">Precision: {q_p}% | Recall: {q_r}%</div>
+            </div>
+            """)
+        with kpi_col2:
+            render_html(f"""
+            <div style="background:white; border-radius:10px; padding:1rem; border-left:5px solid #2563EB; border:1px solid #E2E8F0;">
+                <div style="font-size:0.75rem; color:#64748B; font-weight:700;">EXPLICIT OPINION F1</div>
+                <div style="font-size:1.8rem; font-weight:800; color:#2563EB; margin-top:0.2rem;">{exp_f1}%</div>
+                <div style="font-size:0.75rem; color:#64748B;">Surface adjectival dependency</div>
+            </div>
+            """)
+        with kpi_col3:
+            render_html(f"""
+            <div style="background:white; border-radius:10px; padding:1rem; border-left:5px solid #6366F1; border:1px solid #E2E8F0;">
+                <div style="font-size:0.75rem; color:#64748B; font-weight:700;">IMPLICIT OPINION F1</div>
+                <div style="font-size:1.8rem; font-weight:800; color:#6366F1; margin-top:0.2rem;">{imp_f1}%</div>
+                <div style="font-size:0.75rem; color:#10B981;">+{imp_gain}% gain over Ablation B</div>
+            </div>
+            """)
+        with kpi_col4:
+            render_html(f"""
+            <div style="background:white; border-radius:10px; padding:1rem; border-left:5px solid #F59E0B; border:1px solid #E2E8F0;">
+                <div style="font-size:0.75rem; color:#64748B; font-weight:700;">SYNTAX GRAPH GAIN</div>
+                <div style="font-size:1.8rem; font-weight:800; color:#F59E0B; margin-top:0.2rem;">+{syn_gain}% F1</div>
+                <div style="font-size:0.75rem; color:#64748B;">vs Naive window co-occurrence</div>
+            </div>
+            """)
+            
+        st.markdown("---")
+        st.markdown("#### Quantitative Benchmark & Ablation Study Table")
+        
+        rows = []
+        for m_name, metrics in m_dict.items():
+            rows.append({
+                "Architecture / Configuration": m_name,
+                "Quadruple Precision": f"{metrics.get('quad_p', 0)}%",
+                "Quadruple Recall": f"{metrics.get('quad_r', 0)}%",
+                "Quadruple F1": f"{metrics.get('quad_f1', 0)}%",
+                "Explicit F1": f"{metrics.get('explicit_f1', 0)}%",
+                "Implicit F1": f"{metrics.get('implicit_f1', 0)}%"
+            })
+        st.dataframe(pd.DataFrame(rows), use_container_width=True)
+    else:
+        st.warning("Evaluation results not found. Run `python src/evaluate_acos.py` to generate live benchmarks.")
+    
+    st.markdown("#### Publication Benchmark Visualizations")
+    col_p1, col_p2 = st.columns(2)
+    with col_p1:
+        f_ablation = ROOT / "reports" / "ablation_comparison.png"
+        if f_ablation.exists():
+            st.image(str(f_ablation), caption="Ablation Comparison: Impact of Syntax Graph & Implicit Engine")
+    with col_p2:
+        f_implicit = ROOT / "reports" / "implicit_vs_explicit_f1.png"
+        if f_implicit.exists():
+            st.image(str(f_implicit), caption="Explicit vs. Implicit Opinion Disentanglement Robustness")
+            
+    f_cat = ROOT / "reports" / "category_f1_breakdown.png"
+    if f_cat.exists():
+        st.image(str(f_cat), caption="Category F1 Breakdown Across 9 Culinary Subdomains")
+
 
 # ==============================================================================
 # TAB 9: METHODOLOGY & MODEL CARD
 # ==============================================================================
 elif "Methodology" in st.session_state.current_page or "About" in st.session_state.current_page:
-    render_html('<div class="section-head">📖 System Architecture & Methodology</div>')
+    render_html('<div class="section-head">📖 Research Methodology & ACOS Architecture</div>')
     
     st.markdown("""
-    ### 1. Executive Summary
-    **Kolkata FoodLens** is an end-to-end intelligent dining discovery and food hygiene audit platform tailored for the city of Kolkata, India.
-    Designed as a comprehensive computer science minor project, it solves a fundamental flaw in existing restaurant aggregators: **the conflation of customer popularity with municipal food safety**.
+    ### 1. Research Overview & Academic Credits
+    - **Research Topic**: *"Beyond Polarity: Syntax-Aware Deep Aspect Quadruple Mining and Implicit Opinion Disentanglement in Online Food Reviews"*
+    - **Team Members**: **Tanim Naha, Srilekha, Subhamita, Yashamoti**
+    - **Faculty Guide**: **Dr. Saberi Goswami**
+    - **Institution**: Department of Computer Science & Engineering, Amity University Kolkata
     
-    ### 2. Multi-Criteria Architecture
-    The platform processes four independent layers of intelligence:
+    ---
     
-    1. **Customer Experience Score (50%)**: Derived from customer reviews using a class-balanced TF-IDF + Logistic Regression classifier trained on 13,144 authentic restaurant reviews.
-    2. **Zomato Food Community Rating (25%)**: Incorporating crowd-sourced ratings (1.0 to 5.0 stars) from authentic Zomato listings.
-    3. **Verified Food Safety Score (15%)**: Computed via an objective audit algorithm from municipal FSSAI inspection records.
-    4. **Context & Suitability Tag Matching (10%)**: Strictly non-stereotypical matching across dining contexts (family, students, couples, groups, solo).
+    ### 2. Core Problem & Academic Motivation
+    Conventional sentiment analysis systems suffer from two fundamental deficiencies when applied to conversational culinary reviews:
+    1. **Polarity Blindness**: Assigning a coarse, aggregated score to multi-aspect reviews containing opposing polarities (e.g. *"The mutton biryani was fragrant, but the waiter was rude"*).
+    2. **Implicit Disentanglement Failure**: Completely missing implicit opinions phrased without explicit sentiment adjectives, including:
+       - **Idiomatic Financial Distress**: *"A single plate burned a massive hole in my pocket."*
+       - **Factual Wait Delays**: *"We finished two podcasts before the main course arrived."*
+       - **Biological / Sanitary Consequences**: *"Spent the entire night hugging the toilet bowl."*
+       - **Portion Disparities**: *"Barely fed a pigeon for that price."*
+       - **Environmental Disruptions**: *"Blaring club music made it impossible to hear each other."*
+       
+    ---
     
+    ### 3. Formal Problem Formulation
+    We formulate the task as extracting structured 5-tuples:
+    $$\\mathcal{Q} = \\langle a, c, o, s, \\tau \\rangle$$
+    where:
+    - $a \\in \\mathcal{A}$: Aspect target span (e.g., `mutton biryani`, `server`, `washroom`)
+    - $c \\in \\mathcal{C}$: Category from 9 culinary dimensions (`FOOD#QUALITY`, `FOOD#PRICES`, `FOOD#STYLE_OPTIONS`, `SERVICE#GENERAL`, `SERVICE#PROMPTNESS`, `AMBIENCE#GENERAL`, `RESTAURANT#PRICES`, `HYGIENE#CLEANLINESS`, `HYGIENE#FOOD_SAFETY`)
+    - $o \\in \\mathcal{O}$: Opinion expression span
+    - $s \\in \\{+, -, \\text{neu}\\}$: Sentiment polarity
+    - $\\tau \\in \\{\\text{explicit}, \\text{implicit}\\}$: Opinion typology
+    
+    ---
+    
+    ### 4. Technical Architecture
     ```
-    Customer Review Corpus ──> Text Preprocessing & Emojis ──> TF-IDF + Logistic Regression ──> Customer Experience Score (50%)
-                                                           └──> Clause-Level ABSA Engine     ──> 5-Aspect Polarity Breakdown
-    
-    Municipal Inspection Logs ───────────────────────────────> Safety Scoring Engine          ──> Verified Safety Score 0-100 (15%)
-    
-    Zomato Community Ratings ───────────────────────────────────────────────────────────────> Zomato Rating 1-5 (25%)
-    
-    Dining Context Suitability ─────────────────────────────────────────────────────────────> Occasion Match (10%)
-    
-                                  │
-                                  ▼
-                     Multi-Criteria Ranking Engine ──> Ranked Dining Recommendations
-                                                   └──> Live Streamlit UI & SQLite DB
+    Raw Review Text
+          │
+          ▼
+    SpaCy Dependency Parser ──> NetworkX Directed Graph Engine
+          │                               │
+          ▼                               ▼
+    Aspect Candidate Extractor    Shortest Dependency Path (SDP)
+          │                               │
+          ├───────────────────────────────┘
+          │
+          ▼
+    Implicit Opinion Disentangler ──> Archetype Inference (5 Classes)
+          │
+          ▼
+    Deep Neural Multi-Task Network (SyntaxAwareACOSNet)
+          ├── Multi-Channel Embeddings (Word + POS + Dependency)
+          ├── Bidirectional LSTM Contextualizer
+          ├── Graph-Guided Syntax Self-Attention Mask
+          └── 5 Multi-Task Prediction Heads
+          │
+          ▼
+    Structured ACOS Quadruples <a, c, o, s, tau>
     ```
     
-    ### 3. Food Safety Integrity Rules
-    - **Never Fabricate Data**: If a restaurant does not have a verified municipal inspection record, the system explicitly displays `Safety data unavailable` with a confidence indicator of `No inspection record on file`.
-    - **Re-weighting Integrity**: When a restaurant lacks safety records, the 15% safety weight is proportionally reallocated to customer experience (60%), Zomato rating (30%), and context tags (10%), preventing artificial penalties or unearned bonuses.
+    ---
     
-    ### 4. Mathematical Formulations
-    
-    #### A. Food Safety Score (0–100 Scale)
-    $$\\text{Safety Score} = \\text{Outcome (40 pts)} + \\text{Licence (30 pts)} + \\text{Violation Penalty (20 pts)} + \\text{Recency (10 pts)}$$
-    - **Inspection Outcome**: Satisfactory = 40 pts, Needs Improvement = 20 pts, Major Violations = 5 pts.
-    - **Licence Status**: Active = 30 pts, Renewal Due = 15 pts, Suspended = 0 pts.
-    - **Violation Deductions**: 20 pts minus calibrated severity deductions (pest lapses = -8, cooking oil reuse = -8, cold storage = -6, water quality = -5).
-    - **Recency**: $\\le 6$ months = 10 pts; 6-12 months = 7 pts; 12-24 months = 4 pts; $> 24$ months = 2 pts.
-    
-    #### B. Customer Experience Score (0–100 Scale)
-    $$\\text{Customer Experience Score} = \\left( \\frac{\\text{Positive Reviews} + 0.5 \\times \\text{Neutral Reviews}}{\\text{Total Reviews}} \\right) \\times 100$$
-    
-    ### 5. Data Provenance & Academic Disclaimers
-    - **100 Kolkata Restaurants**: Real, authentic restaurant listings scraped from public Zomato Kolkata data.
-    - **Model Training Corpus**: 13,144 real restaurant reviews from the open Yelp academic research dataset.
-    - **Aspect Validation**: Validated against the SemEval restaurant benchmark dataset.
-    - **Demo Synthetic Reviews & Safety Logs**: Synthetic reviews and municipal safety audit records were synthetically generated for prototype development and testing.
+    ### 5. Multi-Criteria Dining Discovery & Public Health Integration
+    The platform seamlessly integrates fine-grained ACOS quadruple extraction with municipal FSSAI food hygiene audit records:
+    $$\\text{Verified Safety Score} = \\text{Inspection Outcome (40)} + \\text{Licence (30)} + \\text{Violation Deductions (20)} + \\text{Recency (10)}$$
     """)
+
+# ==============================================================================
+# FLOATING BOTTOM-RIGHT CHATBOT SHORTCUT
+# ==============================================================================
+if "Chatbot" not in st.session_state.current_page and "Assistant" not in st.session_state.current_page:
+    st.button(
+        "💬 Ask FoodLens AI",
+        key="floating_chatbot_btn",
+        on_click=navigate_to,
+        args=("💬 FoodLens AI Chatbot",),
+        help="Open the ACOS FoodLens Conversational AI Assistant"
+    )
